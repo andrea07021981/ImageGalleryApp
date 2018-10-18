@@ -1,6 +1,11 @@
 <resources>
     <string name="app_name">ImageGalleryApp</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
+    <string name="network_not_found">Network not found. Connect your device to internet.</string>
+    <string name="nothing_entered">Nothing entered</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title">Title</string>
+    <string name="size">Size</string>
+    <string name="dimensions">Dimensions</string>
+    <string name="search_text">Please enter a value for the search</string>
 </resources>

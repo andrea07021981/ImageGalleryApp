@@ -3,31 +3,48 @@ package com.projects.andreafranco.imagegalleryapp.fragments;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.projects.andreafranco.imagegalleryapp.R;
+import com.projects.andreafranco.imagegalleryapp.adapters.ImageListAdapter;
+import com.projects.andreafranco.imagegalleryapp.loaders.ImageListLoader;
+import com.projects.andreafranco.imagegalleryapp.models.Image;
+import com.projects.andreafranco.imagegalleryapp.utils.NetworkUtils;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link ImageListFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link ImageListFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class ImageListFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+import java.util.ArrayList;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+
+public class ImageListFragment extends Fragment implements LoaderManager.LoaderCallbacks<ArrayList<Image>> {
+
+    private static final String LOG_TAG = ImageListFragment.class.getSimpleName();
+    private static final String IMAGE_LIST = "list_of_images";
+    private static final int IMAGES_LOADER_ID = 1;
+
+    EditText mSearchEditText = null;
+    ImageButton mSearchImageButton = null;
+    ProgressBar mWaitProgressBar = null;
+    TextView mNoNetworkTextView = null;
+    TextView mEmptyListTextView = null;
+    RecyclerView mImageRecyclerView = null;
+    LoaderManager mLoaderManager = null;
+    ArrayList<Image> mImageArrayList;
+    ImageListAdapter mImageAdapter;
 
     private OnFragmentInteractionListener mListener;
 
@@ -39,37 +56,81 @@ public class ImageListFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
      * @return A new instance of fragment ImageListFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static ImageListFragment newInstance(String param1, String param2) {
         ImageListFragment fragment = new ImageListFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view =  inflater.inflate(R.layout.fragment_image_list, container, false);
-        RecyclerView imageRecyclerView = view.findViewById(R.id.images_recycler_view);
+        View rootView =  inflater.inflate(R.layout.image_list_fragment, container, false);
 
-        return view;
+        // initialize views and variables
+        initView(rootView);
+        initValues(rootView);
+
+        if (mImageArrayList.size() == 0) {
+            showToast(rootView, getString(R.string.search_text));
+        } else {
+            mImageRecyclerView.setAdapter(mImageAdapter);
+        }
+
+        return rootView;
+    }
+
+    private void initView(final View rootView) {
+        mSearchEditText = rootView.findViewById(R.id.search_edit_text);
+        mSearchImageButton = rootView.findViewById(R.id.search_image_button);
+        mWaitProgressBar = rootView.findViewById(R.id.wait_progress_bar);
+        mNoNetworkTextView = rootView.findViewById(R.id.no_network_text_view);
+        mEmptyListTextView = rootView.findViewById(R.id.empty_list_text_view);
+        mImageRecyclerView = rootView.findViewById(R.id.images_recycler_view);
+        mImageRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        mLoaderManager = getLoaderManager();
+
+        // on Button click
+        mSearchImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (NetworkUtils.isNetworkAvailable(getContext())) {
+                    if (mNoNetworkTextView.isShown()) mNoNetworkTextView.setVisibility(View.GONE);
+
+                    mSearchEditText.clearFocus();
+                    if (!TextUtils.isEmpty(mSearchEditText.getText().toString().trim())) {
+                        mWaitProgressBar.setVisibility(View.VISIBLE);
+                        if (mLoaderManager.getLoader(IMAGES_LOADER_ID) == null) {
+                            mLoaderManager.initLoader(IMAGES_LOADER_ID, null, ImageListFragment.this);
+                        } else {
+                            mLoaderManager.restartLoader(IMAGES_LOADER_ID, null, ImageListFragment.this);
+                        }
+                    } else {
+                        showToast(rootView, getString(R.string.nothing_entered));
+                    }
+                } else {
+                    mNoNetworkTextView.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+    }
+
+    private void initValues(View view) {
+        mImageArrayList = new ArrayList<>();
+        mImageAdapter = new ImageListAdapter(mImageArrayList);
+        mImageRecyclerView.setAdapter(mImageAdapter);
+    }
+
+    private void showToast(View view, String msg) {
+        Toast.makeText(view.getContext(), msg, Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -94,13 +155,54 @@ public class ImageListFragment extends Fragment {
      * fragment to allow an interaction in this fragment to be communicated
      * to the activity and potentially other fragments contained in that
      * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onImageSelected(Uri uri);
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        // Save the user's search result
+        outState.putParcelableArrayList(IMAGE_LIST, mImageArrayList);
+        Log.d(LOG_TAG, "onSaveInstanceState");
+
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+
+        if (savedInstanceState != null) {
+            Log.d(LOG_TAG, "onViewStateRestored");
+            mImageArrayList = savedInstanceState.getParcelableArrayList(IMAGE_LIST);
+            mImageAdapter.clear();
+            mImageAdapter.addAll(mImageArrayList);
+            mImageRecyclerView.setAdapter(mImageAdapter);
+        }
+    }
+
+
+    @NonNull
+    @Override
+    public Loader<ArrayList<Image>> onCreateLoader(int i, @Nullable Bundle bundle) {
+        return new ImageListLoader(getContext(), mSearchEditText.getText().toString().trim());
+    }
+
+    @Override
+    public void onLoadFinished(@NonNull Loader<ArrayList<Image>> loader, ArrayList<Image> data) {
+        if (data != null && data.size() != 0) {
+            mImageAdapter.clear();
+            mImageAdapter.addAll(data);
+        }
+        mWaitProgressBar.setVisibility(View.GONE);
+        mImageArrayList = data;
+    }
+
+    @Override
+    public void onLoaderReset(@NonNull Loader<ArrayList<Image>> loader) {
+        mImageAdapter.clear();
+        mImageArrayList = null;
     }
 }
