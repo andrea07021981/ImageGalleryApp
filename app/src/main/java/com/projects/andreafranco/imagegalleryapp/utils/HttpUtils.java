@@ -1,10 +1,18 @@
 package com.projects.andreafranco.imagegalleryapp.utils;
 
+import android.annotation.TargetApi;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.projects.andreafranco.imagegalleryapp.models.Image;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -19,9 +27,9 @@ import java.util.ArrayList;
 public class HttpUtils {
 
     private static final String LOG_TAG = HttpUtils.class.getSimpleName();
-    private static final Uri.Builder sUriBuilder = buildUriMatcher();
+    private static final Uri.Builder sUriBuilder = buildUriFlickr();
 
-    public static Uri.Builder buildUriMatcher() {
+    private static Uri.Builder buildUriFlickr() {
         Uri.Builder builder = new Uri.Builder();
         builder.scheme("https")
                 .authority("api.flickr.com")
@@ -49,7 +57,7 @@ public class HttpUtils {
             Log.e(LOG_TAG, "Error during connection", e);
         }
 
-        ArrayList<Image> imageArrayList = extractFeatureFromJson(jsonResponse);;
+        ArrayList<Image> imageArrayList = extractDataFromJson(jsonResponse);;
         return imageArrayList;
     }
 
@@ -115,7 +123,7 @@ public class HttpUtils {
         return url;
     }
 
-    private static ArrayList<Image> extractFeatureFromJson(String jsonResponse) {
+    private static ArrayList<Image> extractDataFromJson(String jsonResponse) {
         if (jsonResponse == null || TextUtils.isEmpty(jsonResponse)) {
             return null;
         }
@@ -123,6 +131,54 @@ public class HttpUtils {
         //TODO extract data
         ArrayList<Image> imagesList = new ArrayList<>();
 
+        try {
+            JSONObject root = new JSONObject(jsonResponse.replace("jsonFlickrApi(", "").replace(")", ""));
+            JSONObject photos = root.getJSONObject("photos");
+            JSONArray imageJSONArray = photos.getJSONArray("photo");
+            for (int i = 0; i < imageJSONArray.length(); i++) {
+                JSONObject item = imageJSONArray.getJSONObject(i);
+                String url = "http://farm" +
+                        item.getString("farm") +
+                        ".staticflickr.com/" +
+                        item.getString("server") +
+                        "/" + item.getString("id") + "_" +
+                        item.getString("secret") +
+                        "_z" +
+                        ".jpg";
+                Bitmap image = createBitmap(url);
+                String size = "-";
+                String dimensions = "-";
+                if (image != null) {
+                    size = String.valueOf(getSizeOf(image));
+                    dimensions = String.format("%s x %s", image.getWidth(), image.getHeight());
+                }
+                String title = item.getString("title");
+                imagesList.add(new Image(title, size, dimensions, image));
+            }
+        } catch (JSONException e) {
+            Log.e(LOG_TAG, "Error parsing json ");
+        }
         return imagesList;
+    }
+
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR1)
+    protected static int getSizeOf(Bitmap data) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB_MR1) {
+            return data.getRowBytes() * data.getHeight();
+        } else {
+            return data.getByteCount();
+        }
+    }
+
+    private static Bitmap createBitmap(String url) {
+        Bitmap bitmap = null;
+        try {
+            bitmap = BitmapFactory.decodeStream((InputStream) new URL(url).getContent());
+        } catch (MalformedURLException e) {
+            Log.e(LOG_TAG, e.getMessage());
+        } catch (IOException e) {
+            Log.e(LOG_TAG, e.getMessage());
+        }
+        return bitmap;
     }
 }
