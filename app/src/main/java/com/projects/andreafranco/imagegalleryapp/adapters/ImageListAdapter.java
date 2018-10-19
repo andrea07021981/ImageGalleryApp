@@ -52,8 +52,10 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.Imag
             mImage = image;
             mImageImageVIew.setImageBitmap(mImage.getImage());
             mTitleTextView.setText(mImage.getTitle());
-            mSizeTextView.setText(mImage.getSize());
-            mDimensionsTextView.setText(mImage.getDimension());
+            String sizeFormat = itemView.getContext().getString(R.string.format_size);
+            mSizeTextView.setText(String.format(sizeFormat, mImage.getSize()));
+            String dimensionFormat = itemView.getContext().getString(R.string.format_dimensions);
+            mDimensionsTextView.setText(String.format(dimensionFormat, mImage.getWidth(), mImage.getHeight()));
         }
 
         @Override

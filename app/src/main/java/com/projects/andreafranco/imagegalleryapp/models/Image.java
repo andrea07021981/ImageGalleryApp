@@ -10,13 +10,15 @@ public class Image implements Parcelable{
 
     private String mTitle;
     private String mSize;
-    private String mDimension;
+    private int mWidth;
+    private int mHeight;
     private Bitmap mImage;
 
-    public Image(String title, String size, String dimension, Bitmap image) {
+    public Image(String title, String size, int width, int height, Bitmap image) {
         mTitle = title;
         mSize = size;
-        mDimension = dimension;
+        mWidth = width;
+        mHeight = height;
         mImage = image;
     }
 
@@ -28,12 +30,20 @@ public class Image implements Parcelable{
         this.mTitle = title;
     }
 
-    public String getDimension() {
-        return mDimension;
+    public int getWidth() {
+        return mWidth;
     }
 
-    public void setDimension(String dimension) {
-        this.mDimension = dimension;
+    public void setHeight(int height) {
+        this.mHeight = height;
+    }
+
+    public int getHeight() {
+        return mHeight;
+    }
+
+    public void setWidth(int width) {
+        this.mWidth = width;
     }
 
     public Bitmap getImage() {
@@ -62,14 +72,16 @@ public class Image implements Parcelable{
         dest.writeParcelable(this.mImage, flags);
         dest.writeString(this.mTitle);
         dest.writeString(this.mSize);
-        dest.writeString(this.mDimension);
+        dest.writeInt(this.mWidth);
+        dest.writeInt(this.mHeight);
     }
 
     protected Image(Parcel in) {
         this.mImage = in.readParcelable(null);
         this.mTitle = in.readString();
         this.mSize = in.readString();
-        this.mDimension = in.readString();
+        this.mWidth= in.readInt();
+        this.mHeight= in.readInt();
     }
 
     public static final Parcelable.Creator<Image> CREATOR = new Parcelable.Creator<Image>() {

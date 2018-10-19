@@ -143,17 +143,19 @@ public class HttpUtils {
                         item.getString("server") +
                         "/" + item.getString("id") + "_" +
                         item.getString("secret") +
-                        "_z" +
+                        "_t" +
                         ".jpg";
                 Bitmap image = createBitmap(url);
-                String size = "-";
-                String dimensions = "-";
+                String size = null;
+                int width = 0;
+                int height = 0;
                 if (image != null) {
                     size = String.valueOf(getSizeOf(image));
-                    dimensions = String.format("%s x %s", image.getWidth(), image.getHeight());
+                    width = image.getWidth();
+                    height = image.getHeight();
                 }
                 String title = item.getString("title");
-                imagesList.add(new Image(title, size, dimensions, image));
+                imagesList.add(new Image(title, size, width, height, image));
             }
         } catch (JSONException e) {
             Log.e(LOG_TAG, "Error parsing json ");

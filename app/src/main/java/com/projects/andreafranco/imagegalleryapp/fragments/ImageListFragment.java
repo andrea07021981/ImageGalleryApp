@@ -1,5 +1,6 @@
 package com.projects.andreafranco.imagegalleryapp.fragments;
 
+import android.arch.lifecycle.ViewModel;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
@@ -66,6 +67,7 @@ public class ImageListFragment extends Fragment implements LoaderManager.LoaderC
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRetainInstance(true);
     }
 
     @Override
@@ -78,7 +80,7 @@ public class ImageListFragment extends Fragment implements LoaderManager.LoaderC
         initView(rootView);
         initValues(rootView);
 
-        if (mImageArrayList.size() == 0) {
+        if (mImageArrayList.size() == 0 && savedInstanceState == null) {
             showToast(rootView, getString(R.string.search_text));
         } else {
             mImageRecyclerView.setAdapter(mImageAdapter);
@@ -160,29 +162,6 @@ public class ImageListFragment extends Fragment implements LoaderManager.LoaderC
         // TODO: Update argument type and name
         void onImageSelected(Uri uri);
     }
-
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        // Save the user's search result
-        outState.putParcelableArrayList(IMAGE_LIST, mImageArrayList);
-        Log.d(LOG_TAG, "onSaveInstanceState");
-
-        super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
-        super.onViewStateRestored(savedInstanceState);
-
-        if (savedInstanceState != null) {
-            Log.d(LOG_TAG, "onViewStateRestored");
-            mImageArrayList = savedInstanceState.getParcelableArrayList(IMAGE_LIST);
-            mImageAdapter.clear();
-            mImageAdapter.addAll(mImageArrayList);
-            mImageRecyclerView.setAdapter(mImageAdapter);
-        }
-    }
-
 
     @NonNull
     @Override

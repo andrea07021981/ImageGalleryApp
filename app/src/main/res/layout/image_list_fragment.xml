@@ -16,17 +16,10 @@
         android:id="@+id/search_image_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@color/colorTransparent"
         android:layout_alignEnd="@id/search_edit_text"
-        android:src="@android:drawable/ic_menu_search"
+        android:src="@mipmap/search_button"
         />
-
-    <ProgressBar
-        android:id="@+id/wait_progress_bar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:visibility="gone"
-        android:indeterminate="true"/>
 
     <TextView
         android:id="@+id/no_network_text_view"
@@ -60,4 +53,11 @@
         android:divider="@null"
         android:dividerHeight="0dp"/>
 
+    <ProgressBar
+        android:id="@+id/wait_progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        android:indeterminate="true"/>
 </RelativeLayout>

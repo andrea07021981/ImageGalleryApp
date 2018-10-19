@@ -33,9 +33,4 @@ public class ImageListLoader extends AsyncTaskLoader<ArrayList<Image>> {
     protected void onStartLoading() {
         forceLoad();
     }
-
-    @Override
-    protected void onStopLoading() {
-        stopLoading();
-    }
 }
