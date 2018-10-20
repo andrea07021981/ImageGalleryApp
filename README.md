@@ -16,6 +16,3 @@ This option would also change the item style for the ImageView because we should
 ## Documentation
 No documentation needed at this moment.
 
-<img align="left" width="350" height="600" src="home.png">
-
-<img align="right" width="350" height="600" src="search.png">
