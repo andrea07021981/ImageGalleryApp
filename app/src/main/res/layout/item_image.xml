@@ -41,7 +41,7 @@
                     android:layout_height="wrap_content"
                     android:maxLines="1"
                     android:ellipsize="end"
-                    android:textSize="15sp"
+                    android:textSize="20sp"
                     android:fontFamily="cursive"
                     android:textStyle="italic"
                     android:text="@string/title"/>
@@ -50,7 +50,7 @@
                     android:id="@+id/size_text_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="10sp"
+                    android:textSize="15sp"
                     android:textStyle="normal"
                     android:paddingEnd="0dp"
                     android:paddingStart="5dp"/>
@@ -59,7 +59,7 @@
                     android:id="@+id/dimensions_text_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="10sp"
+                    android:textSize="15sp"
                     android:paddingEnd="0dp"
                     android:paddingStart="5dp"/>
             </LinearLayout>
