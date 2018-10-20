@@ -11,7 +11,7 @@ public class ImageListActivity extends SingleFragmentActivity implements ImageLi
 
     @Override
     protected Fragment createFragment() {
-        return ImageListFragment.newInstance(null, null);
+        return ImageListFragment.newInstance();
     }
 
     @Override

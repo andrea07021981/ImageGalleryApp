@@ -1,6 +1,5 @@
 package com.projects.andreafranco.imagegalleryapp.fragments;
 
-import android.arch.lifecycle.ViewModel;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,7 +11,6 @@ import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,7 +32,6 @@ import java.util.ArrayList;
 public class ImageListFragment extends Fragment implements LoaderManager.LoaderCallbacks<ArrayList<Image>> {
 
     private static final String LOG_TAG = ImageListFragment.class.getSimpleName();
-    private static final String IMAGE_LIST = "list_of_images";
     private static final int IMAGES_LOADER_ID = 1;
 
     EditText mSearchEditText = null;
@@ -54,12 +51,11 @@ public class ImageListFragment extends Fragment implements LoaderManager.LoaderC
     }
 
     /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
+     * This factory is used to create a new instance of fragment. We should uuse it for parameters
      *
      * @return A new instance of fragment ImageListFragment.
      */
-    public static ImageListFragment newInstance(String param1, String param2) {
+    public static ImageListFragment newInstance() {
         ImageListFragment fragment = new ImageListFragment();
         return fragment;
     }

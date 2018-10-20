@@ -43,10 +43,11 @@ public class HttpUtils {
         return builder;
     }
 
-    //EXAMPLE CALL, REMBER HTTPS INSTEAD OF HTTP
-    //https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=949e98778755d1982f537d56236bbb42&tags=android&format=json&per_page=20&media=photos
-
-
+    /**
+     * User the query parameter for creating url and getting the List of images
+     * @param query
+     * @return
+     */
     public static ArrayList<Image> fetchImageListData(String query) {
         sUriBuilder.appendQueryParameter("tags", query);
         URL url = createUrl(sUriBuilder.build().toString());
@@ -128,7 +129,6 @@ public class HttpUtils {
             return null;
         }
 
-        //TODO extract data
         ArrayList<Image> imagesList = new ArrayList<>();
 
         try {
@@ -176,8 +176,6 @@ public class HttpUtils {
         Bitmap bitmap = null;
         try {
             bitmap = BitmapFactory.decodeStream((InputStream) new URL(url).getContent());
-        } catch (MalformedURLException e) {
-            Log.e(LOG_TAG, e.getMessage());
         } catch (IOException e) {
             Log.e(LOG_TAG, e.getMessage());
         }
