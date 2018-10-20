@@ -40,7 +40,7 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.Imag
             mImageImageVIew.setImageBitmap(mImage.getImage());
             mTitleTextView.setText(mImage.getTitle());
             String sizeFormat = itemView.getContext().getString(R.string.format_size);
-            mSizeTextView.setText(String.format(sizeFormat, mImage.getSize()));
+            mSizeTextView.setText(String.format(sizeFormat, mImage.getSize()/1024L));
             String dimensionFormat = itemView.getContext().getString(R.string.format_dimensions);
             mDimensionsTextView.setText(String.format(dimensionFormat, mImage.getWidth(), mImage.getHeight()));
         }

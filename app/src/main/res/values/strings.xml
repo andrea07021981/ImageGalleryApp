@@ -6,7 +6,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title">Title</string>
     <string name="format_size">
-        Size: <xliff:g id="size">%1$s</xliff:g>
+        Size: <xliff:g id="size">"%.2f"</xliff:g> Kb
     </string>
     <string name="format_dimensions">
         Dimension: <xliff:g id="width">%1$d</xliff:g> x

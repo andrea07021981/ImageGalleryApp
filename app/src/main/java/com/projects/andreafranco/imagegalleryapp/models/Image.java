@@ -7,12 +7,12 @@ import android.os.Parcelable;
 public class Image implements Parcelable{
 
     private String mTitle;
-    private String mSize;
+    private double mSize;
     private int mWidth;
     private int mHeight;
     private Bitmap mImage;
 
-    public Image(String title, String size, int width, int height, Bitmap image) {
+    public Image(String title, double size, int width, int height, Bitmap image) {
         mTitle = title;
         mSize = size;
         mWidth = width;
@@ -52,11 +52,11 @@ public class Image implements Parcelable{
         this.mImage = image;
     }
 
-    public String getSize() {
+    public double getSize() {
         return mSize;
     }
 
-    public void setSize(String size) {
+    public void setSize(double size) {
         this.mSize = size;
     }
 
@@ -69,7 +69,7 @@ public class Image implements Parcelable{
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeParcelable(this.mImage, flags);
         dest.writeString(this.mTitle);
-        dest.writeString(this.mSize);
+        dest.writeDouble(this.mSize);
         dest.writeInt(this.mWidth);
         dest.writeInt(this.mHeight);
     }
@@ -77,7 +77,7 @@ public class Image implements Parcelable{
     protected Image(Parcel in) {
         this.mImage = in.readParcelable(null);
         this.mTitle = in.readString();
-        this.mSize = in.readString();
+        this.mSize = in.readDouble();
         this.mWidth= in.readInt();
         this.mHeight= in.readInt();
     }

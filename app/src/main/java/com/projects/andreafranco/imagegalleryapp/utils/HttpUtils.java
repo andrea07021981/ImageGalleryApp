@@ -146,11 +146,11 @@ public class HttpUtils {
                         "_t" +
                         ".jpg";
                 Bitmap image = createBitmap(url);
-                String size = null;
+                double size = 0L;
                 int width = 0;
                 int height = 0;
                 if (image != null) {
-                    size = String.valueOf(getSizeOf(image));
+                    size = new Integer(getSizeOf(image)).doubleValue();
                     width = image.getWidth();
                     height = image.getHeight();
                 }
