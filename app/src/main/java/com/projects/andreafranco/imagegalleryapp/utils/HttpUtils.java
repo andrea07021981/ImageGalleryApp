@@ -49,6 +49,7 @@ public class HttpUtils {
      * @return
      */
     public static ArrayList<Image> fetchImageListData(String query) {
+        //TODO CHANGE THE CONSTRUCTION OF THE QUERY, IT KEEPS THE OLD TAGS
         sUriBuilder.appendQueryParameter("tags", query);
         URL url = createUrl(sUriBuilder.build().toString());
         String jsonResponse = null;
